@@ -1,12 +1,16 @@
 <?php
 
+	/**
+	 * A class for colorizing strings in an ANSI capable console
+	 */
+
 	namespace stange\consutil\ansi{
 
 		class Colorize{
 
-			private	$string		=	NULL;
-			private	$foreground	=	NULL;
-			private	$background	=	NULL;
+			private	$string			=	NULL;
+			private	$foreground		=	NULL;
+			private	$background		=	NULL;
 
 			/**
 			 * @var $colors Array Different colors for console output
@@ -99,23 +103,15 @@
 
 			}
 
-			public function getColor($name){
+			public function render($variant=0){
 
-				$name	=	trim($name);
+				$variant	=	(int)$variant;
 
-				if(!in_array($name,array_keys(self::$ansiColors))){
+				return sprintf(
+									'\033[%sm',
+									$this->foreground
 
-					throw new \InvalidArgumentException("Unknown color \"$name\"");
-
-				}
-
-				return self::$ansiColors[$name];
-
-			}
-
-			public function render(){
-
-				return sprintf('%s%s',$this->getColor($color),$string);
+				);
 
 			}
 
