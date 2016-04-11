@@ -1,5 +1,6 @@
 <?php
 
+
 	/**
 	 * A class for colorizing strings in an ANSI capable console
 	 */
@@ -8,9 +9,9 @@
 
 		class Colorize{
 
-			private	$string			=	NULL;
-			private	$foreground		=	NULL;
-			private	$background		=	NULL;
+			private	$string		=	NULL;
+			private	$fgColor		=	NULL;
+			private	$bgColor		=	NULL;
 
 			/**
 			 * @var $colors Array Different colors for console output
@@ -20,14 +21,11 @@
 											'black'			=>	30,
 											'red'				=>	31,
 											'green'			=>	32,
-											'brown'			=>	33,
 											'yellow'			=>	33,
 											'blue'			=>	34,
-											'purple'			=>	35,
+											'magenta'		=>	35,
 											'cyan'			=>	36,
-											'white'			=>	37,
-											'gray'			=>	30,
-											'magenta'		=>	45
+											'white'			=>	37
 			);
 
 			private	$bold			=	FALSE;
@@ -47,6 +45,51 @@
 
 				$this->bold	=	(boolean)$bold;
 				return $this;
+
+			}
+
+			public function isBold(){
+
+				return $this->bold;
+
+			}
+
+			public function setInverted($inverted){
+
+				$this->inverted	=	(boolean)$inverted;
+				return $this;
+
+			}
+
+			public function setUnderline($underline){
+
+				$this->underline	=	(boolean)$underline;
+				return $this;
+
+			}
+
+			public function isUnderlined(){
+
+				return $this->underline;
+
+			}
+
+			public function setHidden($hidden){
+
+				$this->hidden	=	(boolean)$hidden;
+				return $this;
+
+			}
+
+			public function isHidden(){
+
+				return $this->hidden;
+
+			}
+
+			public function isInverted(){
+
+				return $this->inverted;
 
 			}
 
@@ -85,46 +128,74 @@
 			public function setForeground($color){
 
 				$this->checkColor($color);
-				$this->foreground	=	$color;
+				$this->fgColor	=	$color;
 				return $this;
 
 			}
 
 			public function getForeground(){
 
-				return $this->foreground;
+				return $this->fgColor;
 
 			}
 
 			public function setBackground($color){
 
 				$this->checkColor($color);
-				$this->background	=	$color;
+				$this->bgColor	=	$color;
 				return $this;
 
 			}
 
 			public function getBackground(){
 
-				return $this->background;
+				return $this->bgColor;
 
 			}
 
 			public function clear(){
 
-				return print("\033[2J\033[;H");
+				return print("\e[2J\e[;H");
 
 			}
 
-			public function render($fgVariant=FALSE,$bgVariant=FALSE){
+			public function render(){
 
-				$fgVariant	=	(int)(boolean)$fgVariant;
-				$bgVariant	=	(int)(boolean)$bgVariant;
+				$style	=	Array();
 
-				$fg			=	$this->foreground	?	"\033[$fgVariant;{$this->getColor($this->foreground)}m"	:	'';
-				$bg			=	$this->background	?	"\033[{$this->getColor($this->background)}m"					:	'';
 
-				return  $fg || $bg ? "$fg$bg{$this->string}\e[0m"	:	$this->string;
+				$style[]	=	$this->bold	?	1	:	0;
+
+				if($this->fgColor){
+
+					$style[]	=	$this->getColor($this->fgColor);
+
+				}
+
+				if($this->inverted){
+
+					$style[]	=	'7';
+
+				}
+
+				if($this->bgColor){
+
+					$style[]	=	$this->getColor($this->bgColor)+10;
+
+				}
+
+
+				if($this->underline){
+
+					$style[]	=	4;
+
+				}
+
+				$style	=	implode(';',$style);
+
+				$style	=	sprintf("\e[%sm%s\e[0m",$style,$this->string);
+
+				return $style;
 
 			}
 
