@@ -1,32 +1,18 @@
 <?php
 
-
 	/**
 	 * A class for colorizing strings in an ANSI capable console
 	 */
 
-	namespace stange\util\console\ansi{
+	namespace stange\constyle\ansi{
+
+		use \stange\util\conversion\Color	as	ColorConversion;
 
 		class Colorize{
 
 			private	$string		=	NULL;
 			private	$fgColor		=	NULL;
 			private	$bgColor		=	NULL;
-
-			/**
-			 * @var $colors Array Different colors for console output
-			 */
-
-			private $colors = Array(
-											'black'			=>	30,
-											'red'				=>	31,
-											'green'			=>	32,
-											'yellow'			=>	33,
-											'blue'			=>	34,
-											'magenta'		=>	35,
-											'cyan'			=>	36,
-											'white'			=>	37
-			);
 
 			private	$bold			=	FALSE;
 			private	$inverted	=	FALSE;
@@ -58,6 +44,19 @@
 
 				$this->inverted	=	(boolean)$inverted;
 				return $this;
+
+			}
+
+			public function setBlink($blink){
+
+				$this->blink	=	(boolean)$blink;
+				return $this;
+
+			}
+
+			public function isBlinking(){
+
+				return $this->blink;
 
 			}
 
@@ -106,29 +105,16 @@
 
 			}
 
-			private function checkColor($color){
-
-				if(array_key_exists($color,$this->colors)){
-
-					return;
-
-				}
-
-				throw new \InvalidArgumentException("Invalid color \"$color\"");
-
-			}
-
 			public function getColor($color){
 
-				$this->checkColor($color);
-				return $this->colors[$color];
+				$cConvert	=	new ColorConversion($color);
+				return $cConvert->toANSI();
 
 			}
 
 			public function setForeground($color){
 
-				$this->checkColor($color);
-				$this->fgColor	=	$color;
+				$this->fgColor	=	$this->getColor($color);
 				return $this;
 
 			}
@@ -141,8 +127,7 @@
 
 			public function setBackground($color){
 
-				$this->checkColor($color);
-				$this->bgColor	=	$color;
+				$this->bgColor	=	$this->getColor($color);
 				return $this;
 
 			}
@@ -163,7 +148,6 @@
 
 				$style	=	Array();
 
-
 				$style[]	=	$this->bold	?	1	:	0;
 
 				if($this->fgColor){
@@ -172,18 +156,23 @@
 
 				}
 
+				if($this->blink){
+
+					$style[]	=	5;
+
+				}
+
 				if($this->inverted){
 
-					$style[]	=	'7';
+					$style[]	=	7;
 
 				}
 
 				if($this->bgColor){
 
-					$style[]	=	$this->getColor($this->bgColor)+10;
+					$style[]	=	$this->getColor($this->bgColor);
 
 				}
-
 
 				if($this->underline){
 
