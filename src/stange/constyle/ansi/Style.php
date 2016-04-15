@@ -1,6 +1,7 @@
 <?php
 
 	/**
+	 * @author Federico Stange <jpfstange@gmail.com>
 	 * A class for styling strings in an ANSI capable console
 	 */
 
