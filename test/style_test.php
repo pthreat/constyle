@@ -18,7 +18,7 @@
 
 	use \stange\constyle\ansi\Style	as	ConsStyle;
 
-	$css	=	'{color:#afcd31;text-decoration:underline;background-color:navy;font-weight:bold}';
+	$css	=	'{color:#afcd31;text-decoration:underline;background-color:navy;font-weight:bold;margin-left:2px;}';
 	$t	=	new ConsStyle("CSS Example $css",$css);
 	echo $t->render()."\n";
 
