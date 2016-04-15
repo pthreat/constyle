@@ -1,14 +1,15 @@
 <?php
 
 	/**
-	 * A class for colorizing strings in an ANSI capable console
+	 * A class for styling strings in an ANSI capable console
 	 */
 
 	namespace stange\constyle\ansi{
 
 		use \stange\util\conversion\Color	as	ColorConversion;
+		use \Sabberworm\CSS\Parser				as	CSSParser;
 
-		class Colorize{
+		class	Style{
 
 			private	$string		=	NULL;
 			private	$fgColor		=	NULL;
@@ -20,10 +21,97 @@
 			private	$dim			=	FALSE;
 			private	$underline	=	FALSE;
 			private	$hidden		=	FALSE;
+			private	$css			=	'';
 
-			public function __construct($string){
+			public function __construct($string,$css=NULL){
 
 				$this->setString($string);
+
+				if(!is_null($css)){
+
+					$this->setCSS($css);
+
+				}
+
+			}
+
+			public function setCSS($css){
+
+				$parse	=	(new CSSParser($css))->parse()->getAllSelectors();
+
+				foreach($parse as $rules){
+
+					$rules	=	$rules->getRules();
+
+					foreach($rules as $rule){
+
+						$value	=	strtolower($rule->getValue());
+
+						switch(strtolower($rule->getRule())){
+
+							case 'color':
+
+								$this->setForeground($value);
+
+							break;
+
+							case 'background-color':
+
+								$this->setBackground($value);
+
+							break;
+
+							case 'font-weight':
+
+								if($value=='bold'){
+
+									$this->setBold(TRUE);
+
+								}
+
+							break;
+
+							case 'text-decoration':
+
+								$this->setTextDecoration($value);
+
+							break;
+
+							case 'display':
+
+								if($value=='none'){
+
+									$this->setString('');
+
+								}
+
+							break;
+
+						}
+
+					}
+
+				}
+
+			}
+
+			private function setTextDecoration($value){
+
+				switch($value){
+
+					case 'blink':
+
+						$this->setBlink(TRUE);
+
+					break;
+
+					case 'underline':
+
+						$this->setUnderline(TRUE);
+
+					break;
+
+				}
 
 			}
 
@@ -152,24 +240,16 @@
 
 				if($this->fgColor){
 
-					$style[]	=	$this->getColor($this->fgColor);
-
-				}
-
-				if($this->blink){
-
+					$style[]	=	38;
 					$style[]	=	5;
-
-				}
-
-				if($this->inverted){
-
-					$style[]	=	7;
+					$style[]	=	$this->getColor($this->fgColor);
 
 				}
 
 				if($this->bgColor){
 
+					$style[]	=	48;
+					$style[]	=	5;
 					$style[]	=	$this->getColor($this->bgColor);
 
 				}
@@ -180,11 +260,36 @@
 
 				}
 
-				$style	=	implode(';',$style);
+				if($this->inverted){
 
+					$style[]	=	7;
+
+				}
+
+				if($this->blink){
+
+					$style[]	=	5;
+
+				}
+
+				$style	=	implode(';',$style);
 				$style	=	sprintf("\e[%sm%s\e[0m",$style,$this->string);
 
 				return $style;
+
+			}
+
+			public function __toString(){
+
+				try{
+
+					return $this->render();
+
+				}catch(\Exception $e){
+
+					return '';
+
+				}
 
 			}
 
