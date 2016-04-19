@@ -2,132 +2,28 @@
 
 	/**
 	 * @author Federico Stange <jpfstange@gmail.com>
-	 * A class for styling strings in an ANSI capable console
+	 * A class for styling text in an ANSI capable console
 	 */
 
 	namespace stange\constyle\ansi{
 
+		use \stange\constyle\ansi\Base;
 		use \stange\constyle\Util;
 		use \stange\util\conversion\Color	as	ColorConversion;
-		use \Sabberworm\CSS\Parser				as	CSSParser;
 
-		class	Style{
+		class	Text extends Base{
 
-			private	$string			=	NULL;
 			private	$fgColor			=	NULL;
-			private	$bgColor			=	NULL;
 
 			private	$bold				=	FALSE;
 			private	$inverted		=	FALSE;
 			private	$blink			=	FALSE;
 			private	$dim				=	FALSE;
 			private	$underline		=	FALSE;
-			private	$hidden			=	FALSE;
-			private	$css				=	'';
-			private	$margin			=	NULL;
-			private	$padding			=	NULL;
-			private	$border			=	NULL;
 
+			/* 
 
-			public function __construct($string,$css=NULL){
-
-				$this->setString($string);
-
-				if(!is_null($css)){
-
-					$this->setCSS($css);
-
-				}
-
-			}
-
-			public function setPadding($amount,$direction=NULL){
-
-				if($direction !== NULL){
-
-					$this->__validateOrientation($direction,'padding');
-
-				}
-
-				$amount	=	(int)$amount;
-
-				if(is_null($direction)){
-
-					$this->padding	=	Array(
-													'top'		=>	$amount,
-													'right'	=>	$amount,
-													'bottom'	=>	$amount,
-													'left'	=>	$amount
-
-					);
-
-					return $this;
-
-				}
-
-				$this->margin[$direction]	=	$value;
-
-				return $this;
-
-			}
-
-			public function getPadding($orientation=NULL){
-
-				if($direction === NULL){
-
-					return $this->padding;
-
-				}
-
-				$this->__validateOrientation($orientation,'padding');
-
-				return $this->padding[$orientation];
-
-			}
-
-			public function setMargin($value,$direction=NULL){
-
-				if($direction !== NULL){
-
-					$this->__validateOrientation($direction,'margin');
-
-				}
-
-				$value	=	(int)$value;
-
-				if(is_null($direction)){
-
-					$this->margin	=	Array(
-													'top'		=>	$value,
-													'right'	=>	$value,
-													'bottom'	=>	$value,
-													'left'	=>	$value
-
-					);
-
-					return $this;
-
-				}
-
-				$this->margin[$direction]	=	$value;
-
-				return $this;
-
-			}
-
-			public function getMargin($direction=NULL){
-
-				if($direction === NULL){
-
-					return $this->margin;
-
-				}
-
-				$this->__validateOrientation($direction,'margin');
-
-				return $this->margin[$direction];
-
-			}
+			text/Factory
 
 			public function setCSS($css){
 
@@ -219,8 +115,9 @@
 				}
 
 			}
+			*/
 
-			private function setTextDecoration($value){
+			private function setDecoration($value){
 
 				switch($value){
 
@@ -286,35 +183,9 @@
 
 			}
 
-			public function setHidden($hidden){
-
-				$this->hidden	=	(boolean)$hidden;
-				return $this;
-
-			}
-
-			public function isHidden(){
-
-				return $this->hidden;
-
-			}
-
 			public function isInverted(){
 
 				return $this->inverted;
-
-			}
-
-			public function setString($string){
-
-				$this->string	=	sprintf('%s',$string);
-				return $this;
-
-			}
-
-			public function getString(){
-
-				return $this->string;
 
 			}
 
@@ -338,26 +209,7 @@
 
 			}
 
-			public function setBackground($color){
-
-				$this->bgColor	=	$this->getColor($color);
-				return $this;
-
-			}
-
-			public function getBackground(){
-
-				return $this->bgColor;
-
-			}
-
-			public function clear(){
-
-				return print("\e[2J\e[;H");
-
-			}
-
-			public function render(){
+			protected function __render(){
 
 				$style	=	Array();
 
@@ -368,14 +220,6 @@
 					$style[]	=	38;
 					$style[]	=	5;
 					$style[]	=	$this->getColor($this->fgColor);
-
-				}
-
-				if($this->bgColor){
-
-					$style[]	=	48;
-					$style[]	=	5;
-					$style[]	=	$this->getColor($this->bgColor);
 
 				}
 
@@ -398,46 +242,7 @@
 				}
 
 				$style	=	implode(';',$style);
-				$style	=	sprintf("\e[%sm%s\e[0m",$style,$this->string);
-				$style	=	$this->__parseMargin($style);
-
-				return $style;
-
-			}
-
-			private function __parseMargin($style){
-
-				$margin	=	$this->margin;
-
-				if(!($margin['top']&&$margin['right']&&$margin['bottom']&&$margin['left'])){
-
-					return $style;
-
-				}
-
-				foreach($margin as $orientation=>$value){
-
-					switch($orientation){
-
-						case 'top':
-							$style	=	sprintf('%s%s',str_repeat($this->marginChar,$value),$style);
-						break;
-
-						case 'right':
-							$style	=	sprintf('%s%s',str_repeat("\t",$value),$style);
-						break;
-
-						case 'bottom':
-							$style	=	sprintf('%s%s',str_repeat("\n",$value),$style);
-						break;
-
-						case 'left':
-							$style	=	sprintf('%s%s',str_repeat("\t",$value),$style);
-						break;
-
-					}
-
-				}
+				$style	=	sprintf("\e[%sm%s\e[0m",$style,$this->getContent());
 
 				return $style;
 
@@ -447,7 +252,7 @@
 
 				try{
 
-					return $this->render();
+					return $this->__render();
 
 				}catch(\Exception $e){
 
