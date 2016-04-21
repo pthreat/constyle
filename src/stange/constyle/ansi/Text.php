@@ -97,9 +97,11 @@
 
 				$style[]	=	$this->bold	?	1	:	0;
 
-				if($this->color){
+				$color	=	$this->getColor()->getArray();
 
-					$style	=	array_merge($style,$this->color->getArray());	
+				if($color){
+
+					$style	=	array_merge($style,$color);
 
 				}
 
