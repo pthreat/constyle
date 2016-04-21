@@ -13,9 +13,6 @@
 
 		class	Block extends Base{
 
-			private	$fgColor		=	NULL;
-			private	$bgColor		=	NULL;
-
 			private	$width		=	NULL;
 			private	$height		=	NULL;
 
@@ -50,20 +47,6 @@
 
 			}
 
-
-			public function setBackgroundColor($color){
-
-				$this->bgColor	=	$this->getColor($color);
-				return $this;
-
-			}
-
-			public function getBackgroundColor(){
-
-				return $this->bgColor;
-
-			}
-
 			public function setWidth($width){
 
 				$this->width	=	(int)$width;
@@ -93,12 +76,6 @@
 			protected function __render(){
 
 				$render	=	$this->getContent();
-
-				if($this->getPadding()){
-
-					$render	=	$this->getPadding()->setContent($render)->render();
-
-				}
 
 				if($this->getBorder()){
 

@@ -4,6 +4,7 @@
 
 		use \stange\constyle\ansi\Block;
 		use \stange\constyle\ansi\Padding;
+		use \stange\constyle\ansi\Color;
 
 		abstract class Base{
 			
@@ -13,11 +14,58 @@
 			private	$length			=	NULL;
 			private	$charMap			=	NULL;
 			private	$block			=	NULL;
+			private	$color			=	NULL;
 
 			public function __construct($content=''){
 
 				$this->setContent($content);
 				
+			}
+
+			private function &__getColorInstance(){
+
+				$this->color	=	$this->color === NULL ? new Color($this->content) : $this->color;
+
+				return $this->color;
+
+			}
+
+			public function setForeground($color){
+
+				$colorObj	=	$this->__getColorInstance();
+				$colorObj->setForeground($color);
+				return $this;
+
+			}
+
+			public function getForeground(){
+
+				$color	=	$this->__getColorInstance();
+
+				return $color->getForeground();
+
+			}
+
+			public function setBackground($color){
+
+				$colorObj	=	$this->__getColorInstance();
+				$colorObj->setBackground($color);
+				return $this;
+
+			}
+
+			public function getBackground(){
+
+				$color	=	$this->__getColorInstance();
+				return $color->getBackground();
+
+			}
+
+			public function getColor(){
+
+				$color	=	$this->__getColorInstance();
+				return $color;
+
 			}
 
 			public function setContent($content){

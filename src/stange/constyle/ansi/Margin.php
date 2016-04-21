@@ -49,14 +49,17 @@
 
 				}
 
-				return implode('',Array(
+				$content	=	implode('',Array(
 												str_repeat("\n",$width['top']),
-												str_repeat("\t",$width['left']),
 												$this->getContent(),
-												str_repeat("\t",$width['right']),
 												str_repeat("\n",$width['bottom'])
 										)
 				);
+
+				$content	=	preg_replace('/^/m',str_repeat("\t",$width['left']),$content);
+				$content	=	preg_replace('/$/m',str_repeat("\t",$width['right']),$content);
+
+				return $content;
 
 			}
 

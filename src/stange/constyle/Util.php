@@ -2,6 +2,8 @@
 
 	namespace stange\constyle{
 
+		use \stange\util\conversion\Color	as	ColorConversion;
+
 		class Util{
 
 			public static function getCharMap($name){

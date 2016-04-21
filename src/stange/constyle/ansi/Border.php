@@ -3,7 +3,7 @@
 	namespace stange\constyle\ansi{
 
 		use \stange\constyle\Util;
-		use \stange\constyle\ansi\Colorize;
+		use \stange\constyle\ansi\Color;
 		use \stange\constyle\ansi\Base;
 
 		class Border extends Base{
@@ -165,7 +165,7 @@
 
 				$border			=	"$cornerLeft$border$cornerRight";
 
-				return (new Colorize($border,$this->color[$orientation]))->render();
+				return $this->color[$orientation]	?	(new Color($border,$this->color[$orientation]))->render()	:	$border;
 
 			}
 
@@ -181,7 +181,7 @@
 
 				if($styleRight){
 					
-					$replace	=	$this->color['right'] ? (new Colorize($borderRightChar,$this->color['right']))->render()	: 	$borderRightChar;
+					$replace	=	$this->color['right'] ? (new Color($borderRightChar,$this->color['right']))->render()	: 	$borderRightChar;
 					$string	=	preg_replace('#^#',$replace,$string);
 
 				}
@@ -190,7 +190,7 @@
 
 				if($styleLeft){
 
-					$replace	=	$this->color['left'] ? (new Colorize($borderRightChar,$this->color['left']))->render()	: 	$borderLeftChar;
+					$replace	=	$this->color['left'] ? (new Color($borderRightChar,$this->color['left']))->render()	: 	$borderLeftChar;
 					$string	=	preg_replace('#$#',$replace,$string);
 
 				}
