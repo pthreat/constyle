@@ -7,7 +7,9 @@
 	use \stange\constyle\ansi\Text;
 	use \stange\constyle\ansi\Padding;
 
-	$text	=	(new Text('This is a test'))
-	->setForeground('red');
+	$pad	=	isset($_SERVER['argv'][1])	?	(int)$_SERVER['argv'][1]	:	1;
 
-	echo $text->render()."\n";
+	$text	=	(new Text('Padding test'))
+	->setPadding((new Padding())->setWidth($pad));
+
+	echo $text->render();
