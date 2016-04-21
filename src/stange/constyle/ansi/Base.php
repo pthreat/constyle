@@ -2,31 +2,28 @@
 
 	namespace stange\constyle\ansi{
 
+		use \stange\constyle\ansi\Block;
 		use \stange\constyle\ansi\Padding;
-		use \stange\constyle\ansi\Border;
-		use \stange\constyle\ansi\Margin;
 
 		abstract class Base{
 			
-			private	$padding	=	NULL;
-			private	$display	=	NULL;
-			private	$border	=	NULL;
-			private	$margin	=	NULL;
-			private	$content	=	NULL;
-			private	$charMap	=	NULL;
+			private	$padding			=	NULL;
+			private	$display			=	NULL;
+			private	$content			=	NULL;
+			private	$length			=	NULL;
+			private	$charMap			=	NULL;
+			private	$block			=	NULL;
 
-			private	$height	=	NULL;
-			private	$width	=	NULL;
-
-			final public function __construct($content=''){
+			public function __construct($content=''){
 
 				$this->setContent($content);
-
+				
 			}
 
 			public function setContent($content){
 
-				$this->content	=	$content;
+				$this->content			=	$content;
+				$this->contentLength	=	strlen($content);
 				return $this;
 
 			}
@@ -34,19 +31,6 @@
 			public function getContent(){
 
 				return $this->content;
-
-			}
-
-			public function setBorder(Border $border){
-
-				$this->border	=	$border;
-				return $this;
-
-			}
-
-			public function getBorder(){
-
-				return $this->border;
 
 			}
 
@@ -60,19 +44,6 @@
 			public function getPadding(){
 
 				return $this->padding;
-
-			}
-
-			public function setMargin(Margin $margin){
-
-				$this->margin	=	$margin;
-				return $this;
-
-			}
-
-			public function getMargin(){
-
-				return $this->margin;
 
 			}
 
@@ -96,7 +67,7 @@
 
 				$this->display	=	$display;
 
-				return $this;
+				return $this->block	=	new Block($this->content);
 
 			}
 
@@ -108,50 +79,33 @@
 
 			abstract protected function __render();
 
-			public function render(){
+			private function setContentLength($length){
 
-				$render	=	$this->__render();
+				return $this->length	=	$length;
+				
+			}
+
+			public function render(){
 
 				if($this->padding){
 
-					$this->padding->setContent($render);
+					$this->padding->setContent($this->content);
 					$render	=	$this->padding->render();
+					$this->setContent($render);
 
 				}
 
-				if($this->display=='block'){
+				$render	=	$this->__render();
 
-					$box	=	new Box($render);
+				if($this->display	== 'block'){
 
-					if($this->margin){
-
-						$box->setMargin($this->margin);
-
-					}
-
-					if($this->border){
-
-						$box->setBorder($this->border);
-
-					}
-
-					if($this->height){
-
-						$box->setHeight($this->height);
-
-					}
-
-					if($this->width){
-
-						$box->setWidth($this->width);
-
-					}
-
-					return $box->render();
+					$this->block->setContentLength(strlen($this->content));
+					$this->block->setContent($render);
+					return $this->block->render();
 
 				}
 
-				return $render;
+				return $this->__render();
 
 			}
 
@@ -159,7 +113,7 @@
 
 				try{
 
-					return $this->render();
+					return $this->__render();
 
 				}catch(\Exception $e){
 

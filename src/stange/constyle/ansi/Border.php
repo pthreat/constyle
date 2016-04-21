@@ -169,7 +169,7 @@
 
 			}
 
-			private function __borderLeftRight(){
+			private function __borderLeftRight($pad){
 
 				require	"charmap.php";
 
@@ -210,7 +210,7 @@
 				$top		=	$this->__generateBorderTopBottom('top');
 				$bottom	=	$this->__generateBorderTopBottom('bottom');
 
-				return sprintf('%s%s%s',$top,$this->__borderLeftRight(),$bottom);
+				return sprintf('%s%s%s',$top,$this->__borderLeftRight(strlen($top)),$bottom);
 
 			}
 

@@ -9,17 +9,47 @@
 
 		use stange\constyle\ansi\Base;
 		use stange\constyle\ansi\Border;
-		use stange\constyle\ansi\Padding;
 		use stange\constyle\ansi\Margin;
 
-		class	Box extends Base{
+		class	Block extends Base{
 
 			private	$fgColor		=	NULL;
 			private	$bgColor		=	NULL;
 
 			private	$width		=	NULL;
 			private	$height		=	NULL;
+
 			private	$float		=	NULL;
+
+			private	$margin		=	NULL;
+			private	$border		=	NULL;
+
+			public function setBorder(Border $border){
+
+				$this->border	=	$border;
+				return $this;
+
+			}
+
+			public function getBorder(){
+
+				return $this->border;
+
+			}
+
+			public function setMargin(Margin $margin){
+
+				$this->margin	=	$margin;
+				return $this;
+
+			}
+
+			public function getMargin(){
+
+				return $this->margin;
+
+			}
+
 
 			public function setBackgroundColor($color){
 
@@ -64,12 +94,6 @@
 
 				$render	=	$this->getContent();
 
-				if($this->getMargin()){
-
-					$render	=	$this->getMargin()->setContent($render)->render();
-
-				}
-
 				if($this->getPadding()){
 
 					$render	=	$this->getPadding()->setContent($render)->render();
@@ -79,6 +103,12 @@
 				if($this->getBorder()){
 
 					$render	=	$this->getBorder()->setContent($render)->render();
+
+				}
+
+				if($this->getMargin()){
+
+					$render	=	$this->getMargin()->setContent($render)->render();
 
 				}
 
