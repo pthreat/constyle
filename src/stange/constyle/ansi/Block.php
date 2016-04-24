@@ -76,17 +76,41 @@
 
 			protected function __render(){
 
-				$render	=	$this->getContent();
+				$render			=	$this->getContent();
+				$contentIsBase	=	$render instanceof Base;
 
-				if($this->getForeground() && $this->getContent() instanceof Text){
+				if($contentIsBase){
 
-					$render	=	$this->getContent()->setForeground($this->getForeground());
+					while(is_object($render)&&$render instanceof Base){
+
+						$render	=	$render->getContent();
+
+					}
 
 				}
 
+				if($this->getPadding()){
+
+					$render	=	$this->getPadding()->setContent($render)->render();
+
+				}
+
+				$length	=	strlen($render);
+
+
 				if($this->getBorder()){
 
-					$render	=	$this->getBorder()->setContent($render)->render();
+					$border	=	$this->getBorder()
+					->setLength($length)
+					->setContent($render);
+
+					if($this->getForeground()){
+
+						$border->setForeground($this->getForeground());
+
+					}
+
+					$render	=	$border->render();
 
 				}
 

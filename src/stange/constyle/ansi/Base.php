@@ -141,14 +141,6 @@
 
 			public function render(){
 
-				if($this->padding){
-
-					$this->padding->setContent($this->content);
-					$render	=	$this->padding->render();
-					$this->setContent($render);
-
-				}
-
 				$render	=	$this->__render();
 
 				if($this->display	== 'block'){

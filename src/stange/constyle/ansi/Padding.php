@@ -56,8 +56,8 @@
 										)
 				);
 
-				$content	=	preg_replace('/^/m',str_repeat("\t",$width['left']),$content);
-				$content	=	preg_replace('/$/m',str_repeat("\t",$width['right']),$content);
+				$content	=	preg_replace('/^/m',str_repeat(" ",$width['left']),$content);
+				$content	=	preg_replace('/$/m',str_repeat(" ",$width['right']),$content);
 
 				return $content;
 

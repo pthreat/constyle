@@ -12,6 +12,20 @@
 			private	$color		=	Array('top'=>'','right'=>'','bottom'=>'','left'=>'');
 			private	$style		=	Array('top'=>'solid','right'=>'solid','bottom'=>'solid','left'=>'solid');
 			private	$charMap		=	NULL;
+			private	$length		=	0;
+
+			public function setLength($length){
+
+				$this->length	=	(int)$length;
+				return $this;
+
+			}
+
+			public function getLength(){
+
+				return $this->length;
+
+			}
 
 			public function setColor($color,$orientation=NULL){
 
@@ -151,7 +165,16 @@
 
 				$style	=	empty($this->style[$orientation])	?	'solid'	:	$this->style[$orientation];
 				$content	=	$this->getContent();
-				$len		=	$content instanceof Base	?	$content->getContentLength()	:	strlen($content);
+
+				if($this->length){
+
+					$len	=	$this->length;
+
+				}else{
+
+					$len		=	$content instanceof Base	?	$content->getContentLength()	:	strlen($content);
+
+				}
 
 				$border	=	'';
 
@@ -174,14 +197,31 @@
 
 				require	"charmap.php";
 
+
 				$string		=	$this->getContent();
 				$styleLeft	=	$this->style['left'];
+
+				$string		=	explode("\n",$string);
+				$fg			=	$this->getForeground();
+
+				foreach($string as &$newLine){
+
+					$newLine	=	str_pad($newLine,$pad-2,' ');
+
+					if($fg){
+
+						$newLine	=	(new Color($newLine,$fg))->render();
+
+					}
+
+				}
+
+				$string	=	implode("\n",$string);
 
 				if($styleLeft){
 
 					$borderLeftChar	=	$charMap['border'][$styleLeft]['side']['left'];
 					$replace	=	$this->color['left'] ? (new Color($borderLeftChar,$this->color['left']))->render()	: 	$borderLeftChar;
-					$string	=	str_pad($string,$pad,' ');
 					$string	=	preg_replace('#$#m',$replace,$string);
 
 				}
@@ -196,15 +236,17 @@
 
 				}
 
+
 				return "\n$string\n";
 
 			}
+
 
 			protected function __render(){
 
 				if(!($this->width['top']||$this->width['right']||$this->width['bottom']||$this->width['left'])){
 
-					return $this->string;
+					return $this->getContent();
 
 				}
 
