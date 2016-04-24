@@ -8,6 +8,7 @@
 	namespace stange\constyle\ansi{
 
 		use stange\constyle\ansi\Base;
+		use stange\constyle\ansi\Text;
 		use stange\constyle\ansi\Border;
 		use stange\constyle\ansi\Margin;
 
@@ -76,6 +77,12 @@
 			protected function __render(){
 
 				$render	=	$this->getContent();
+
+				if($this->getForeground() && $this->getContent() instanceof Text){
+
+					$render	=	$this->getContent()->setForeground($this->getForeground());
+
+				}
 
 				if($this->getBorder()){
 

@@ -70,8 +70,8 @@
 
 			public function setContent($content){
 
-				$this->content			=	$content;
-				$this->contentLength	=	strlen($content);
+				$this->content	=	$content;
+				$this->length	=	strlen($content);
 				return $this;
 
 			}
@@ -79,6 +79,12 @@
 			public function getContent(){
 
 				return $this->content;
+
+			}
+
+			public function getContentLength(){
+
+				return $this->length;
 
 			}
 

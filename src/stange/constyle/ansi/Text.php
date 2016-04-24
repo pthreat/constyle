@@ -123,6 +123,12 @@
 
 				}
 
+				if(!$style){
+
+					return $this->getContent();
+
+				}
+
 				$style	=	implode(';',$style);
 				$style	=	sprintf("\e[%sm%s\e[0m",$style,$this->getContent());
 

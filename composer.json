@@ -5,6 +5,7 @@
 	"keywords": ["console","linux","terminal","css","styling"],
 	"homepage": "https://github.com/pthreat/constyle",
 	"license": "BSD-3-Clause",
+	"secure-http":false,
 	"authors": [
 		{
 			"name":	"Federico Stange",
@@ -18,8 +19,8 @@
 	"require": {
 					"php": ">=5.4",
 					"sabberworm/php-css-parser": "*",
-					"stange/conversion": "*"
-
+					"stange/conversion": "*",
+					"stange/consutil":"dev-master"
 	},
 	"minimum-stability": "dev",
 	"autoload":{

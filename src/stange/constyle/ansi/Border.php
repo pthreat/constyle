@@ -150,7 +150,8 @@
 				require "charmap.php";
 
 				$style	=	empty($this->style[$orientation])	?	'solid'	:	$this->style[$orientation];
-				$len		=	strlen($this->getContent());
+				$content	=	$this->getContent();
+				$len		=	$content instanceof Base	?	$content->getContentLength()	:	strlen($content);
 
 				$border	=	'';
 
@@ -165,7 +166,7 @@
 
 				$border			=	"$cornerLeft$border$cornerRight";
 
-				return $this->color[$orientation]	?	(new Color($border,$this->color[$orientation]))->render()	:	$border;
+				return $border;
 
 			}
 
@@ -173,25 +174,25 @@
 
 				require	"charmap.php";
 
-				$string				=	$this->getContent();
-				$styleRight			=	$this->style['right'];
-
-				$borderRightChar	=	$charMap['border'][$styleRight]['side']['right'];
-				$borderLeftChar	=	$charMap['border'][$styleRight]['side']['right'];
-
-				if($styleRight){
-					
-					$replace	=	$this->color['right'] ? (new Color($borderRightChar,$this->color['right']))->render()	: 	$borderRightChar;
-					$string	=	preg_replace('#^#',$replace,$string);
-
-				}
-
-				$styleLeft			=	$this->style['left'];
+				$string		=	$this->getContent();
+				$styleLeft	=	$this->style['left'];
 
 				if($styleLeft){
 
-					$replace	=	$this->color['left'] ? (new Color($borderRightChar,$this->color['left']))->render()	: 	$borderLeftChar;
-					$string	=	preg_replace('#$#',$replace,$string);
+					$borderLeftChar	=	$charMap['border'][$styleLeft]['side']['left'];
+					$replace	=	$this->color['left'] ? (new Color($borderLeftChar,$this->color['left']))->render()	: 	$borderLeftChar;
+					$string	=	str_pad($string,$pad,' ');
+					$string	=	preg_replace('#$#m',$replace,$string);
+
+				}
+
+				$styleRight	=	$this->style['right'];
+
+				if($styleRight){
+					
+					$borderRightChar	=	$charMap['border'][$styleRight]['side']['right'];
+					$replace	=	$this->color['right'] ? (new Color($borderRightChar,$this->color['right']))->render()	: 	$borderRightChar;
+					$string	=	preg_replace('#^#m',$replace,$string);
 
 				}
 
@@ -208,9 +209,13 @@
 				}
 
 				$top		=	$this->__generateBorderTopBottom('top');
+				$length	=	strlen($top);
 				$bottom	=	$this->__generateBorderTopBottom('bottom');
 
-				return sprintf('%s%s%s',$top,$this->__borderLeftRight(strlen($top)),$bottom);
+				$top		=	$this->color['top']		?	(new Color($top,$this->color['top']))->render()			:	$top;
+				$bottom	=	$this->color['bottom']	?	(new Color($bottom,$this->color['bottom']))->render()	:	$bottom;
+
+				return sprintf('%s%s%s',$top,$this->__borderLeftRight($length),$bottom);
 
 			}
 
