@@ -110,7 +110,17 @@
 
 					}
 
+					if($this->getBackground()){
+
+						$border->setBackground($this->getBackground());
+
+					}
+
 					$render	=	$border->render();
+
+				}else{
+
+					$render	=	new Color($render,$this->getForeground(),$this->getBackground());
 
 				}
 

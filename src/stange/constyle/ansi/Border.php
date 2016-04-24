@@ -203,14 +203,15 @@
 
 				$string		=	explode("\n",$string);
 				$fg			=	$this->getForeground();
+				$bg			=	$this->getBackground();
 
 				foreach($string as &$newLine){
 
 					$newLine	=	str_pad($newLine,$pad-2,' ');
 
-					if($fg){
+					if($fg||$bg){
 
-						$newLine	=	(new Color($newLine,$fg))->render();
+						$newLine	=	(new Color($newLine,$fg,$bg))->render();
 
 					}
 
